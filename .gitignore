@@ -3,5 +3,4 @@
 *.pyc
 
 #ROPE FILES
-*.ropeproject
-*.ropeproject/*
+.ropeproject/*

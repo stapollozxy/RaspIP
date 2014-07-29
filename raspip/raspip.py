@@ -10,14 +10,10 @@
 import socket
 import requests
 
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
-from config import SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_RECIPIENTS, IP_PUBLIC_SERVER
+import mail
+from config import IP_PUBLIC_SERVER
 
 import pdb
-
 
 class RaspberryPi(object):
     """
@@ -41,51 +37,15 @@ class RaspberryPi(object):
         except Exception, e:
             print(e)
         finally:
-            public_ip = None
-            print(public_ip)
-            
+            public_ip = 'No Internet Connection'
+                        
         local_ip  = socket.gethostbyname(socket.gethostname())
-
 
         self.ip_addresses = local_ip,public_ip
 
     def sendIpAddresses(self,):
-
-        try:
-            username = SMTP_USERNAME or False
-            password = SMTP_PASSWORD or False #Maybe it should be encrypted ^_^
-            recipients = ','.join(SMTP_RECIPIENTS) or username
-        
-            self.SMTP_SERVER= SMTP_SERVER
-            self.SMTP_PORT = SMTP_PORT
-        except Exception, e:
-            print(e)
-
-        try:
-            message = MIMEMultipart()
-            message['From'] = username
-            message['Subject'] = "RaspberryPi IP Addresses"
-            message['To'] = recipients
-            message['Cc'] = 'josue@josuebrunel.org'
-        
-            body = "Local Ip : %s | Public Ip : %s " %self.ip_addresses
-            message.attach(MIMEText(body,'plain'))
-        
-            session =smtplib.SMTP(SMTP_SERVER,SMTP_PORT)
-        
-            session.ehlo()
-            session.starttls()
-            session.ehlo
-            session.login(username, password)
-        
-            session.sendmail(username, recipient, message.as_string())
-            session.quit()
-        except Exception, e:
-            print(e)
-        finally:
-            pass
-        
-                                    
+        mail.send_email(self.ip_addresses)
+                                                    
 if __name__ == '__main__':
         pi = RaspberryPi()
         pi()
