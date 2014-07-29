@@ -6,14 +6,10 @@ from threading import Thread
 
 from config import SMTP_USERNAME, SMTP_PASSWORD, SMTP_RECIPIENTS, SMTP_SERVER, SMTP_PORT
 
-try:
-    username = SMTP_USERNAME or False
-    password = SMTP_PASSWORD or False #Maybe it should be encrypted (^_^)
-    recipients = ','.join(SMTP_RECIPIENTS) or username
-    
-except Exception, e:
-    print(e)
 
+username = SMTP_USERNAME or False
+password = SMTP_PASSWORD or False #Maybe it should be encrypted (^_^)
+recipients = ','.join(SMTP_RECIPIENTS) or username
 
 def async(f):
     def wrapper(*args, **kwargs):

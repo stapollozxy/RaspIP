@@ -47,7 +47,7 @@ class RaspberryPi(object):
         mail.send_email(self.ip_addresses)
                                                     
 if __name__ == '__main__':
-        pi = RaspberryPi()
-        pi()
-        print(pi.ip_addresses)
+    pi = RaspberryPi()
+    pi()
+    print(pi.ip_addresses)
         
