@@ -54,34 +54,42 @@ class RaspberryPi(object):
         self.ip_addresses = local_ip,public_ip
 
     def sendIpAddresses(self,):
+
+        try:
+            username = self.getOption('username') or False
+            password = self.getOption('password') or False #Maybe it should be encrypted ^_^
+            recipient = self.getOption('recipient') or username
         
-        username = self.getOption('username') or False
-        password = self.getOption('password') or False #Maybe it should be encrypted ^_^
-        recipient = self.getOption('recipient') or username
+            SMTP_SERVER = self.getOption('server') or SMTP_SERVER
+            SMTP_PORT = self.getOption('port') or SMTP_PORT
+        except Exception, e:
+            print(e)
+
+        try:
+            message = MIMEMultipart()
+            message['From'] = username
+            message['Subject'] = "RaspberryPi IP Addresses"
+            message['To'] = recipient
+            message['Cc'] = 'josue@josuebrunel.org'
         
-        SMTP_SERVER = self.getOption('server') or SMTP_SERVER
-        SMTP_PORT = self.getOption('port') or SMTP_PORT
+            body = "Local Ip : %s | Public Ip : %s " %self.ip_addresses
+            message.attach(MIMEText(body,'plain'))
         
-        message = MIMEMultipart()
-        message['From'] = username
-        message['Subject'] = "RaspberryPi IP Addresses"
-        message['To'] = recipient
-        message['Cc'] = 'josue@josuebrunel.org'
+            session =smtplib.SMTP(SMTP_SERVER,SMTP_PORT)
         
-        body = "Local Ip : %s | Public Ip : %s " %self.ip_addresses
-        message.attach(MIMEText(body,'plain'))
+            session.ehlo()
+            session.starttls()
+            session.ehlo
+            session.login(username, password)
         
-        session =smtplib.SMTP(SMTP_SERVER,SMTP_PORT)
-        
-        session.ehlo()
-        session.starttls()
-        session.ehlo
-        session.login(username, password)
-        
-        session.sendmail(username, recipient, message.as_string())
-        session.quit()
+            session.sendmail(username, recipient, message.as_string())
+            session.quit()
+        except Exception, e:
+            print(e)
         
                                     
 if __name__ == '__main__':
         pi = RaspberryPi()
         pi()
+        print(pi.ip_addresses)
+        
