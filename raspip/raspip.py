@@ -36,8 +36,14 @@ class RaspberryPi(object):
     def getIp(self,):
         '''Set public and private IP addresses
         '''
-       
-        public_ip = requests.get(IP_PUBLIC_SERVER).content
+        try:
+            public_ip = requests.get(IP_PUBLIC_SERVER).content
+        except Exception, e:
+            print(e)
+        finally:
+            public_ip = None
+            print(public_ip)
+            
         local_ip  = socket.gethostbyname(socket.gethostname())
 
 
@@ -48,7 +54,7 @@ class RaspberryPi(object):
         try:
             username = SMTP_USERNAME or False
             password = SMTP_PASSWORD or False #Maybe it should be encrypted ^_^
-            recipient = ','.join(SMTP_RECIPIENTS) or username
+            recipients = ','.join(SMTP_RECIPIENTS) or username
         
             self.SMTP_SERVER= SMTP_SERVER
             self.SMTP_PORT = SMTP_PORT
@@ -59,7 +65,7 @@ class RaspberryPi(object):
             message = MIMEMultipart()
             message['From'] = username
             message['Subject'] = "RaspberryPi IP Addresses"
-            message['To'] = recipient
+            message['To'] = recipients
             message['Cc'] = 'josue@josuebrunel.org'
         
             body = "Local Ip : %s | Public Ip : %s " %self.ip_addresses
@@ -76,6 +82,8 @@ class RaspberryPi(object):
             session.quit()
         except Exception, e:
             print(e)
+        finally:
+            pass
         
                                     
 if __name__ == '__main__':
