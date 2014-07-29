@@ -1,0 +1,7 @@
+#TEMP FILE
+*~
+*.pyc
+
+#ROPE FILES
+*.ropeproject
+*.ropeproject/*

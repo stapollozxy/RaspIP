@@ -6,20 +6,22 @@
 # with both ip addesses
 ###########################################################
 
-import smtplib
+
 import socket
-import urllib2
-from ConfigParser import SafeConfigParser
+import requests
+
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+from config import SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_RECIPIENTS, IP_PUBLIC_SERVER
+
 import pdb
 
 
 class RaspberryPi(object):
     """
     """
-    SMTP_SERVER = 'smtp.gmail.com'
-    SMTP_PORT = 587
 
     def __init__(self, ):
         """
@@ -28,40 +30,28 @@ class RaspberryPi(object):
         self.ip_addresses = False
 
     def __call__(self,):
-        self.initParser()
         self.getIp()
         self.sendIpAddresses()
-        
-    def initParser(self,):
-        self.parser = SafeConfigParser()
-        self.parser.read('setting.ini')
-
-    def getOption(self, option):
-        '''Return option value if exists
-        '''
-        return [ self.parser.get(section,option) for section in self.parser.sections() if self.parser.has_option(section, option) ][0]
 
     def getIp(self,):
         '''Set public and private IP addresses
         '''
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect((self.getOption('local'),int(self.getOption('local_port'))))
-        public_ip = urllib2.urlopen(self.getOption('public')).read() # Return public IP
-        local_ip  = s.getsockname()[0] # Return local IP
+       
+        public_ip = requests.get(IP_PUBLIC_SERVER).content
+        local_ip  = socket.gethostbyname(socket.gethostname())
 
-        s.close()
 
         self.ip_addresses = local_ip,public_ip
 
     def sendIpAddresses(self,):
 
         try:
-            username = self.getOption('username') or False
-            password = self.getOption('password') or False #Maybe it should be encrypted ^_^
-            recipient = self.getOption('recipient') or username
+            username = SMTP_USERNAME or False
+            password = SMTP_PASSWORD or False #Maybe it should be encrypted ^_^
+            recipient = ','.join(SMTP_RECIPIENTS) or username
         
-            SMTP_SERVER = self.getOption('server') or SMTP_SERVER
-            SMTP_PORT = self.getOption('port') or SMTP_PORT
+            self.SMTP_SERVER= SMTP_SERVER
+            self.SMTP_PORT = SMTP_PORT
         except Exception, e:
             print(e)
 
