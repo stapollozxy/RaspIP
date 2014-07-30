@@ -32,7 +32,7 @@ class RaspberryPi(object):
     def getHostLocalAddress(self,):
         
         if platform == "darwin":
-            hostname = socket.gethostname() if '.local' in socket.gethostname() else socket.gethostname()+'.local' #Some OS X where hostname doesn't have the <.local>
+            hostname = socket.gethostname() if '.local' in socket.gethostname() else socket.gethostname()+'.local' #OS X where hostname doesn't have the <.local>
             return socket.gethostbyname(hostname)
         else:
             return socket.gethostbyname(socket.gethostname())
@@ -54,8 +54,8 @@ class RaspberryPi(object):
     def sendIpAddresses(self,):
         mail.send_email(self.ip_addresses)
                                                     
-if __name__ == '__main__':
-    pi = RaspberryPi()
-    pi()
-    print(pi.ip_addresses)
+# if __name__ == '__main__':
+#     pi = RaspberryPi()
+#     pi()
+#     print(pi.ip_addresses)
         

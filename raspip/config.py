@@ -2,7 +2,7 @@
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 SMTP_USERNAME = 'josuebrunel@gmail.com'
-SMTP_PASSWORD = 'yourpassword'
+SMTP_PASSWORD = 'password'
 SMTP_RECIPIENTS = [
     'josuebrunel@gmail.com',
     'josue@josuebrunel.org'
