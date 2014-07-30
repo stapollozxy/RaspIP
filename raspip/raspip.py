@@ -6,9 +6,9 @@
 # with both ip addesses
 ###########################################################
 
-
 import socket
 import requests
+from sys import platform
 
 import mail
 from config import IP_PUBLIC_SERVER
@@ -29,6 +29,14 @@ class RaspberryPi(object):
         self.getIp()
         self.sendIpAddresses()
 
+    def getHostLocalAddress(self,):
+        
+        if platform == "darwin":
+            hostname = socket.gethostname() if '.local' in socket.gethostname() else socket.gethostname()+'.local' #Some OS X where hostname doesn't have the <.local>
+            return socket.gethostbyname(hostname)
+        else:
+            return socket.gethostbyname(socket.gethostname())
+
     def getIp(self,):
         '''Set public and private IP addresses
         '''
@@ -36,11 +44,11 @@ class RaspberryPi(object):
             public_ip = requests.get(IP_PUBLIC_SERVER).content
         except Exception, e:
             print(e)
-        finally:
-            public_ip = 'No Internet Connection'
-                        
-        local_ip  = socket.gethostbyname(socket.gethostname())
-
+            public_ip = 'None : no internet connection'
+        #finally:
+            
+        local_ip  = self.getHostLocalAddress()
+       
         self.ip_addresses = local_ip,public_ip
 
     def sendIpAddresses(self,):
